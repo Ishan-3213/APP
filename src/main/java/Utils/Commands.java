@@ -3,23 +3,38 @@ package Utils;
 import Constants.ApplicationConstants;
 import Exceptions.InvalidCommand;
 
+/**
+ * a class used to store every word in the input command
+ */
 public class Commands {
-
-    private String l_rootCommand;
+    /**
+     * the first word of input command
+     */
+    String l_rootCommand;
+    /**
+     * used to store the word in command splited by space
+     */
     private String[] l_parameters;
+    /**
+     * the second word of input command
+     */
     private String l_firstParameter;
+    /**
+     * the third word of input command
+     */
     private String l_secondParameter;
+    /**
+     * the forth word of input command
+     */
     private String l_thirdParameter;
     private String l_command;
 
+    /**
+     * initial command object
+     * @param p_command the input command from consel
+     */
     public Commands(String p_command ){
-        // if (p_command == " " || p_command == null || p_command.trim().isEmpty()) {
-        //     new InvalidCommand("Command cannot be null or empty.");
-        //     return;
-        // }
-        // else{
             getRootCommandWord(p_command);
-            // validateCommand();
         // }
     }
 
@@ -41,6 +56,7 @@ public class Commands {
              * Game Phase 1:
              */
             case ApplicationConstants.EDITMAP:
+            case ApplicationConstants.SAVEMAP:
             case ApplicationConstants.LOADMAP: {
                 if (l_parameters.length >= 2 && !l_parameters[1].isEmpty()) {
                     l_firstParameter = l_parameters[1];
@@ -65,34 +81,43 @@ public class Commands {
                 }
                 switch (l_parameters[1]) {
                     case "-"+ApplicationConstants.ADD:{
-                        l_firstParameter = l_parameters[1];
-                        if(l_parameters[2]!=null && !l_parameters[2].isEmpty()) {
-                            l_secondParameter = l_parameters[2];
-                            if(Utils.isInteger(l_parameters[3])) {
-                                l_thirdParameter = l_parameters[3];
-                                return true;
+                        try {
+                            l_firstParameter = l_parameters[1];
+                            if(l_parameters[2]!=null && !l_parameters[2].isEmpty()) {
+                                l_secondParameter = l_parameters[2];
+                                if(Utils.isInteger(l_parameters[3])) {
+                                    l_thirdParameter = l_parameters[3];
+                                    return true;
+                                }else {
+                                        new InvalidCommand("Invalid parameter format for " + l_command);
+                                        return false;
+                                    }
                             }else {
-                                    new InvalidCommand("Invalid parameter format for " + l_command);
-                                    return false;
-                                }
-                        }else {
+                                new InvalidCommand("Invalid command recieved: " + l_command);
+                                return false;
+                            }
+                        } catch (Exception e) {
                             new InvalidCommand("Invalid command recieved: " + l_command);
                             return false;
                         }
+                        
                     }
                     case "-"+ApplicationConstants.REMOVE: {
-                        l_firstParameter = l_parameters[1];
-                        if(l_parameters[2]!=null && !l_parameters[2].isEmpty()) {
-                            l_secondParameter = l_parameters[2];
-                            return true;
-                        }else {
-                                    new InvalidCommand("Invalid parameter format for " + l_command);
-                                    return false;
-                                }
-                        }
-                    default:
+                        try {
+                             l_firstParameter = l_parameters[1];
+                            if(l_parameters[2]!=null && !l_parameters[2].isEmpty()) {
+                                l_secondParameter = l_parameters[2];
+                                return true;
+                            }else {
+                                new InvalidCommand("Invalid parameter format for " + l_command);
+                                return false;
+                                    }
+                            }
+                        catch (Exception e) {
                         new InvalidCommand("\nInvalid command format for Add/Remove " + l_command);
                         return false;
+                        }
+                    }
                 }
             }
             case ApplicationConstants.EDITCOUNTRY:
@@ -103,28 +128,39 @@ public class Commands {
                 }
                 switch (l_parameters[1]) {
                     case "-" + ApplicationConstants.ADD:{
-                        l_firstParameter = l_parameters[1];
-                        if(l_parameters[2]!=null && !l_parameters[2].isEmpty()) {
-                            l_secondParameter = l_parameters[2];
-                            if(Utils.isInteger(l_parameters[3])) {
-                                l_thirdParameter = l_parameters[3];
-                                return true;
+                        try {
+                            l_firstParameter = l_parameters[1];
+                            if(l_parameters[2]!=null && !l_parameters[2].isEmpty()) {
+                                l_secondParameter = l_parameters[2];
+                                if(Utils.isInteger(l_parameters[3])) {
+                                    l_thirdParameter = l_parameters[3];
+                                    return true;
+                                }else {
+                                        new InvalidCommand("Invalid parameter format for " + l_command);
+                                        return false;
+                                    }
                             }else {
-                                    new InvalidCommand("Invalid parameter format for " + l_command);
-                                    return false;
-                                }
-                        }else {
-                            new InvalidCommand("Invalid command recieved: " + l_command);
-                            return false;
+                                new InvalidCommand("Invalid command recieved: " + l_command);
+                                return false;
+                            }  
+                        } catch (Exception e) {
+                                new InvalidCommand("Invalid command recieved: " + l_command);
+                                return false;
                         }
+                        
                     }
                     case "-" + ApplicationConstants.REMOVE: {
-                        l_firstParameter = l_parameters[1];
-                        if (l_parameters.length >= 3 && !l_parameters[2].isEmpty()) {
-                            return true;
-                        } else {
-                            new InvalidCommand("\nInvalid parameter recieved: " + l_command);
-                            return false;
+                        try {
+                            l_firstParameter = l_parameters[1];
+                            if (l_parameters.length >= 3 && !l_parameters[2].isEmpty()) {
+                                return true;
+                            } else {
+                                new InvalidCommand("\nInvalid parameter recieved: " + l_command);
+                                return false;
+                            }
+                        } catch (Exception e) {
+                                new InvalidCommand("\nInvalid parameter recieved: " + l_command);
+                                return false;
                         }
                     }
                     default:
@@ -151,11 +187,16 @@ public class Commands {
                 switch (l_parameters[1]) {
                     case "-" + ApplicationConstants.ADD:
                     case "-" + ApplicationConstants.REMOVE: {
-                        l_firstParameter = l_parameters[1];
-                        if (l_parameters.length >= 3 && !l_parameters[2].isEmpty()) {
-                            l_secondParameter = l_parameters[2];
-                            return true;
-                        } else {
+                        try {
+                            l_firstParameter = l_parameters[1];
+                            if (l_parameters.length >= 3 && !l_parameters[2].isEmpty()) {
+                                l_secondParameter = l_parameters[2];
+                                return true;
+                            } else {
+                                new InvalidCommand("Invalid command parameter for Add/Remove.");
+                                return false;
+                            }
+                        } catch (Exception e) {
                             new InvalidCommand("Invalid command parameter for Add/Remove.");
                             return false;
                         }
@@ -171,8 +212,8 @@ public class Commands {
                     return false;
                 }
                 try {
-                    Integer.parseInt(l_parameters[1]);
-                    Integer.parseInt(l_parameters[2]);
+                    l_firstParameter = (l_parameters[1]);
+                    l_secondParameter = (l_parameters[2]);
                     return true;
                 } catch (NumberFormatException ex) {
                     new InvalidCommand("Invalid NumberFormate for " + l_command);

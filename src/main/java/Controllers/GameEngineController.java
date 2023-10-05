@@ -15,9 +15,12 @@ import Views.ShowMap;
 import Views.ShowPlayerInfo;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -101,7 +104,21 @@ public class GameEngineController {
             } catch (IOException l_ioException) {
                 l_ioException.printStackTrace();
             }
-            Commands l_command = new Commands(l_commandEntered);
+            String[] list = l_commandEntered.split("-");
+            for(int i = 0; i<list.length; i++){
+                String str;
+                if(list.length>1)
+                {
+                    if(i>0)
+                    {
+                        str = list[0] + "-" + list[i];
+                    }else{
+                        continue;
+                    }
+                }else{
+                    str = list[0];
+                }
+                Commands l_command = new Commands(str);
             if (l_command.validateCommand()) {
                 switch (l_command.getL_rootCommand()) {
                     //read different commands then perform regarding methods
@@ -114,6 +131,8 @@ public class GameEngineController {
                         break;
                     }
                     case ApplicationConstants.SAVEMAP: {
+                        saveMap(l_command);
+                        break;
                     }
                     case ApplicationConstants.LOADMAP: {
                         mapLoader(l_command);
@@ -132,20 +151,25 @@ public class GameEngineController {
                         break;
                     }
 
-                    case ApplicationConstants.SHOWMAP: {
-                        showMap();
-                        break;
+                        case ApplicationConstants.SHOWMAP: {
+                            showMap();
+                            break;
+                        }
+                        case ApplicationConstants.EXIT: {
+                            exit = true;
+                            break;
+                        }
+                        default: {
+                            System.out.println("\nInvalid Command for Phase 1.");
+                            break;
+                        }
                     }
-                    case ApplicationConstants.EXIT: {
-                        exit = true;
-                        break;
-                    }
-                    default: {
-                        System.out.println("\nInvalid Command for Phase 1.");
-                        break;
-                    }
-                }
+                // } else {
+                        // System.out.println("\nInvalid Command for Phase 1.");
+                // }
             }
+            }
+            
         }
     }
 
@@ -161,7 +185,21 @@ public class GameEngineController {
             } catch (IOException l_ioException) {
                 l_ioException.printStackTrace();
             }
-            Commands l_command = new Commands(l_commandEntered);
+            String[] list = l_commandEntered.split("-");
+            for(int i = 0; i<list.length; i++){
+                String str;
+                if(list.length>1)
+                {
+                    if(i>0)
+                    {
+                        str = list[0] + "-" + list[i];
+                    }else{
+                        continue;
+                    }
+                }else{
+                    str = list[0];
+                }
+                Commands l_command = new Commands(str);
             if (l_command.validateCommand()) {
                 switch (l_command.getL_rootCommand()) {
                     //read different commands then perform regarding methods
@@ -174,7 +212,7 @@ public class GameEngineController {
                         break;
                     }
                     case ApplicationConstants.ASSIGNCOUNTRIES: {
-                        assignCountries(l_command);
+                        assignCountries();
                         break;
                     }
                     case ApplicationConstants.SHOWMAP: {
@@ -191,6 +229,7 @@ public class GameEngineController {
                     }
                 }
             }
+        }
         }
     }
 
@@ -210,7 +249,21 @@ public class GameEngineController {
             } catch (IOException l_ioException) {
                 l_ioException.printStackTrace();
             }
-            Commands l_command = new Commands(l_commandEntered);
+            String[] list = l_commandEntered.split("-");
+            for(int i = 0; i<list.length; i++){
+                String str;
+                if(list.length>1)
+                {
+                    if(i>0)
+                    {
+                        str = list[0] + "-" + list[i];
+                    }else{
+                        continue;
+                    }
+                }else{
+                    str = list[0];
+                }
+                Commands l_command = new Commands(str);
             if (l_command.validateCommand()) {
                 switch (l_command.getL_rootCommand()) {
                     //read different commands then perform regarding methods
@@ -225,10 +278,10 @@ public class GameEngineController {
                     }
 
                     case ApplicationConstants.EXIT: {
+                        break;
                     }
 
                     case ApplicationConstants.DEPLOY: {
-
                         break;
                     }
 
@@ -238,6 +291,7 @@ public class GameEngineController {
                     }
                 }
             }
+        }
         }
     }
 
@@ -269,18 +323,52 @@ public class GameEngineController {
     }
 
     public void neighborEditor(Commands p_command){
-
+        if(p_command.getL_firstParameter().equals("-"+ApplicationConstants.ADD)) {
+            if(d_countryService.addCountry(p_command)) {
+                System.out.println("Added Successfully");
+            }else {
+                System.out.println("Invalid Input");
+            }
+        } else if(p_command.getL_firstParameter().equals("-"+ApplicationConstants.REMOVE)) {
+            if(d_countryService.isCountryRemoved(p_command)) {
+                System.out.println("Removed Successfully");
+            }else {
+                System.out.println("Invalid Input");
+            }
+        }
     }
 
     public void mapEditor(Commands p_command){
-        System.out.println("MApEditor");
-        if(p_command.getL_firstParameter().equals("-"+ApplicationConstants.ADD)) {
-            d_countryService.addCountry(p_command);
-        } else if(p_command.getL_firstParameter().equals("-"+ApplicationConstants.REMOVE)) {
-            if(d_countryService.isCountryRemoved(p_command)) System.out.println("Removed Successfully");
-            // Remove country
+        if(p_command.getL_firstParameter()!=null && !p_command.getL_firstParameter().isEmpty()){
+            String filePath = "./src/main/java/Data/Maps/" + p_command.getL_firstParameter();
+            File file = new File(filePath);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        }else{
+            System.out.println("File name not found");
         }
     }
+    
+    public void saveMap(Commands p_command){
+        if(p_command.getL_firstParameter()!=null && !p_command.getL_firstParameter().isEmpty()){
+            String filePath = "./src/main/java/Data/Maps/" + p_command.getL_firstParameter();
+            File file = new File(filePath);
+        if (file.exists()) {
+            System.out.println("File exists");
+            d_mapService.saveMap(p_command);
+        }else{
+            System.out.println("File not found");
+        }
+        }else{
+            System.out.println("File name not found");
+        }
+    }
+
     /**
      * load map
      * @param p_command read player's input command from the console
@@ -312,10 +400,9 @@ public class GameEngineController {
 
     /**
      * a method to assign countries to the player
-     * @param p_command read player's input command from the console
      */
-    public void assignCountries(Commands p_command) {
-        d_playerService.assignCountries(p_command);
+    public void assignCountries() {
+        d_playerService.assignCountries();
         d_showPlayerInfo.displayPlayerInfo();
     }
 
