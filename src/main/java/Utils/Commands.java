@@ -129,8 +129,7 @@ public class Commands {
                 }
             }
             case ApplicationConstants.EDITCOUNTRY:
-            case ApplicationConstants.EDITNEIGHBOR: {
-                if (l_parameters.length < 2) {
+            if (l_parameters.length < 2) {
                     new InvalidCommand("Invalid command format for " + l_command);
                     return false;
                 }
@@ -169,6 +168,33 @@ public class Commands {
                         } catch (Exception e) {
                                 new InvalidCommand("\nInvalid parameter recieved: " + l_command);
                                 return false;
+                        }
+                    }
+                    default:
+                        new InvalidCommand("\nInvalid command format for Add/Remove " + l_command + " try '-add/-remove <parameter>' ");
+                        return false;
+                }
+            case ApplicationConstants.EDITNEIGHBOR: {
+                if (l_parameters.length < 2) {
+                    new InvalidCommand("Invalid command format for " + l_command);
+                    return false;
+                }
+                switch (l_parameters[1]) {
+                    case "-" + ApplicationConstants.ADD:
+                    case "-" + ApplicationConstants.REMOVE:{
+                        l_firstParameter = l_parameters[1];
+                        if(Utils.isInteger(l_parameters[2])) {
+                            l_secondParameter = l_parameters[2];
+                            if(Utils.isInteger(l_parameters[3])) {
+                                l_thirdParameter = l_parameters[3];
+                                return true;
+                            }else {
+                                    new InvalidCommand("Invalid parameter format for " + l_command);
+                                    return false;
+                                }
+                        }else {
+                            new InvalidCommand("Invalid command recieved: " + l_command);
+                            return false;
                         }
                     }
                     default:
@@ -225,6 +251,21 @@ public class Commands {
                     return true;
                 } catch (NumberFormatException ex) {
                     new InvalidCommand("Invalid NumberFormate for " + l_command);
+                    return false;
+                }
+            }
+            case ApplicationConstants.ADVANCE: {
+                if (l_parameters.length < 4) {
+                    new InvalidCommand("Invalid command format for  " + l_command + "\ntry: advance countryFrom countryTo numOfArmies");
+                    return false;
+                }
+                try {
+                    l_firstParameter = (l_parameters[1]);
+                    l_secondParameter = (l_parameters[2]);
+                    l_thirdParameter = (l_parameters[3]);
+                    return true;
+                } catch (NumberFormatException ex) {
+                    new InvalidCommand("Invalid NumberFormat for " + l_command);
                     return false;
                 }
             }
