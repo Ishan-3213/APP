@@ -1,40 +1,44 @@
 package Orders;
 
-import Models.Card;
 import Models.CardType;
 import Models.Player;
-import Models.WorldMap;
-import Services.PlayerService;
-
 import java.util.ArrayList;
 
+/**
+ * This is the Diplomacy class which implements IOrders interface
+ */
 public class Diplomacy implements IOrders{
-
-
-
     /**
-     * players information
+     * all players information
      */
     private ArrayList<Player> d_Players;
-
     /**
      * target player's name
      */
     private String d_TargetPlayerToNegotiate;
-    private Player d_sourcePlayer;
-    private  Player d_targetPlayer;
-
     /**
-     * Parameterized Constructor for negotiate card
+     * the player creating this order
      */
-    public Diplomacy(String p_TargetPlayerToNegotiate,Player p_sourcePlayer,ArrayList<Player> p_Players){
-//        Card card = new Card();
-//        card.setCardType(CardType.DIPLOMACY);
+    private Player d_sourcePlayer;
+    /**
+     * the player who source player negotiate with
+     */
+    private  Player d_targetPlayer;
+    /**
+     * execute this order
+     * @param p_TargetPlayerToNegotiate the player who source player negotiate with
+     * @param p_sourcePlayer the player creating this order
+     * @param p_Players all players information
+     */
+    public Diplomacy(String p_TargetPlayerToNegotiate,Player p_sourcePlayer,ArrayList<Player> p_Players)
+    {
         d_TargetPlayerToNegotiate = p_TargetPlayerToNegotiate;
         d_sourcePlayer=p_sourcePlayer;
         d_Players=p_Players;
     }
-
+    /**
+     * execute the current order
+     */
     @Override
     public void execute() {
         if (valid())
@@ -43,9 +47,11 @@ public class Diplomacy implements IOrders{
             d_targetPlayer.getD_diplomacyWith().add(d_sourcePlayer.getD_playerName());
             d_sourcePlayer.removeCard(CardType.DIPLOMACY);
         }
-
     }
-
+    /**
+     * check if the game state valid to execute the current order
+     * @return if it's valid game state
+     */
     @Override
     public boolean valid() {
         boolean l_targetPlayerExist=false;
@@ -64,22 +70,7 @@ public class Diplomacy implements IOrders{
             System.out.println("the player "+d_TargetPlayerToNegotiate+" is not exist");
             return false;
         }
-
-
     }
-
-
-
-    /**
-     * boolean method to check the game state
-     * @param p_gameState show the states of game
-     * @return if it's a valid game state
-     */
-//    @Override
-//    public boolean valid(int p_gameState) {
-//        return false;
-//    }
-
     /**
      * override method to print the order from players
      */
@@ -93,9 +84,7 @@ public class Diplomacy implements IOrders{
         {
             System.out.println("the diplomacy card is invalid: "+"player "+d_sourcePlayer.getD_playerName()+" will diplomacy with player "+d_TargetPlayerToNegotiate);
         }
-
     }
-
     /**
      * override method to get the order name
      * @return order name
